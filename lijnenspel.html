@@ -24,5 +24,45 @@
             <p>De galerie wordt geladen...</p>
         </div>
     </main>
+<script>
+  // 1. Instellingen: welk bestand moeten we uitlezen?
+  const contentFile = '/content/lijnenspel.md'; // Verander dit naar architectuur.md of lijnenspel.md
+
+  async function loadGallery() {
+    const galleryContainer = document.getElementById('gallery');
+    
+    try {
+      // 2. Haal het bestand op dat het CMS heeft gemaakt
+      const response = await fetch(contentFile);
+      if (!response.ok) throw new Error('Nog geen foto's gevonden.');
+      const text = await response.text();
+
+      // 3. Zoek de afbeeldingen in de tekst (eenvoudige 'regex' scan)
+      const imageRegex = /image:\s*([^\s\n]+)/g;
+      let match;
+      let htmlOutput = '';
+
+      while ((match = imageRegex.exec(text)) !== null) {
+        const imageUrl = match[1].replace(/['"]/g, ''); // Verwijder eventuele aanhalingstekens
+        htmlOutput += `
+          <div class="photo-card">
+            <a href="${imageUrl}" target="_blank">
+              <img src="${imageUrl}" alt="Fotografie Marcel Bos" loading="lazy">
+            </a>
+          </div>`;
+      }
+
+      // 4. Plaats de foto's in de pagina
+      galleryContainer.innerHTML = htmlOutput || '<p>Er zijn nog geen foto\'s toegevoegd aan deze collectie.</p>';
+      
+    } catch (error) {
+      console.log('Wachten op eerste upload...', error);
+      galleryContainer.innerHTML = '<p>Zodra Marcel de eerste foto uploadt via het beheerpaneel, verschijnt deze hier.</p>';
+    }
+  }
+
+  // Start de lader
+  loadGallery();
+</script>
 </body>
 </html>
