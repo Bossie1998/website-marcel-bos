@@ -1,0 +1,16 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/images/uploads"
+public_folder: "/assets/images/uploads"
+
+collections:
+  - name: "portfolio"
+    label: "Portfolio's"
+    files:
+      - label: "Miniatuur"
+        name: "miniatuur"
+        file: "content/miniatuur.md"
+        fields:
+          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
