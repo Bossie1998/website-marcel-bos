@@ -1,0 +1,70 @@
+:root {
+  --blue: #1E293B;  /* Diep petroleumblauw */
+  --grey: #475569;  /* Leigrijs voor tekst */
+  --light: #F8FAFC; /* Achtergrond */
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--light);
+  color: var(--grey);
+  margin: 0;
+  font-size: 1.125rem; /* 18px voor betere leesbaarheid */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+header {
+  padding: 3rem 0;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--blue);
+  font-weight: 600;
+  padding: 0.5rem; /* Groter klikoppervlak */
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+  transition: opacity 0.3s ease;
+}
+
+/* Contactformulier specifiek voor Netlify */
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+input, textarea {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+}
