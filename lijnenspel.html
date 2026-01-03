@@ -1,68 +1,35 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLijnenspel | Marcel Bos</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <header class="container">
-        <nav>
-            <a href="/" class="logo">MARCEL BOS</a>
-            <ul>
-                <li><a href="/miniatuur">Miniatuur</a></li>
-                <li><a href="/architectuur">Architectuur</a></li>
-                <li><a href="/lijnenspel">Lijnenspel</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="container">
-        <h1>Lijnenspel</h1>
-        <div class="gallery" id="gallery">
-            <p>De galerie wordt geladen...</p>
-        </div>
-    </main>
 <script>
-  // 1. Instellingen: welk bestand moeten we uitlezen?
-  const contentFile = '/content/lijnenspel.md'; // Verander dit naar architectuur.md of lijnenspel.md
+  const contentFile = '/content/lijnenspel.md'; 
 
   async function loadGallery() {
     const galleryContainer = document.getElementById('gallery');
     
     try {
-      // 2. Haal het bestand op dat het CMS heeft gemaakt
       const response = await fetch(contentFile);
-      if (!response.ok) throw new Error('Nog geen foto's gevonden.');
+      if (!response.ok) throw new Error('Bestand niet gevonden');
       const text = await response.text();
 
-      // 3. Zoek de afbeeldingen in de tekst (eenvoudige 'regex' scan)
-      const imageRegex = /image:\s*([^\s\n]+)/g;
+      // Verbeterde zoekmethode voor foto's in een lijst
+      const imageRegex = /image:\s*["']?([^"'\s\n]+)["']?/g;
       let match;
       let htmlOutput = '';
 
       while ((match = imageRegex.exec(text)) !== null) {
-        const imageUrl = match[1].replace(/['"]/g, ''); // Verwijder eventuele aanhalingstekens
+        const imageUrl = match[1];
         htmlOutput += `
-          <div class="photo-card">
+          <div class="photo-card" style="margin-bottom: 20px;">
             <a href="${imageUrl}" target="_blank">
-              <img src="${imageUrl}" alt="Fotografie Marcel Bos" loading="lazy">
+              <img src="${imageUrl}" style="width: 100%; border-radius: 8px;" alt="Werk van Marcel Bos">
             </a>
           </div>`;
       }
 
-      // 4. Plaats de foto's in de pagina
-      galleryContainer.innerHTML = htmlOutput || '<p>Er zijn nog geen foto\'s toegevoegd aan deze collectie.</p>';
+      galleryContainer.innerHTML = htmlOutput || '<p>Er zijn nog geen foto\'s gevonden in dit bestand.</p>';
       
     } catch (error) {
-      console.log('Wachten op eerste upload...', error);
-      galleryContainer.innerHTML = '<p>Zodra Marcel de eerste foto uploadt via het beheerpaneel, verschijnt deze hier.</p>';
+      galleryContainer.innerHTML = '<p>De website wordt bijgewerkt... Even geduld of ververs de pagina over 30 seconden.</p>';
     }
   }
 
-  // Start de lader
   loadGallery();
 </script>
-</body>
-</html>
