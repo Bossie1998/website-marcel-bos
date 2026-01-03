@@ -14,3 +14,13 @@ collections:
         file: "content/miniatuur.md"
         fields:
           - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
+      - label: "Architectuur"
+        name: "architectuur"
+        file: "content/architectuur.md"
+        fields:
+          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
+      - label: "Lijnenspel"
+        name: "lijnenspel"
+        file: "content/lijnenspel.md"
+        fields:
+          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
