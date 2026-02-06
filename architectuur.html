@@ -5,64 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architectuur | Marcel Bos</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Extra styling voor het raster om zeker te weten dat het zichtbaar is */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .photo-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <header class="container">
-        <nav style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
-            <a href="/" style="font-weight: bold; text-decoration: none; color: #1E293B;">MARCEL BOS</a>
-            <ul style="display: flex; list-style: none; gap: 20px;">
-                <li><a href="/miniatuur" style="text-decoration: none; color: #475569;">Miniatuur</a></li>
-                <li><a href="/architectuur" style="text-decoration: none; color: #1E293B; border-bottom: 2px solid #1E293B;">Architectuur</a></li>
-                <li><a href="/lijnenspel" style="text-decoration: none; color: #475569;">Lijnenspel</a></li>
+    <header class="main-header">
+        <nav class="container">
+            <a href="/" class="logo">MARCEL BOS</a>
+            <ul class="nav-links">
+                <li><a href="/miniatuur.html">Miniatuur</a></li>
+                <li><a href="/architectuur.html" style="font-weight: bold; color: #1E293B;">Architectuur</a></li>
+                <li><a href="/lijnenspel.html">Lijnenspel</a></li>
             </ul>
         </nav>
     </header>
 
     <main class="container">
-        <h1 style="margin-top: 40px; color: #1E293B;">Architectuur</h1>
-        <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 40px;">
-        
-        <div id="gallery" class="gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-            <p id="loading-text">De foto's worden opgehaald...</p>
+        <h1>Architectuur</h1>
+        <div id="gallery" class="gallery">
+            <p>De foto's worden geladen uit de galerie...</p>
         </div>
     </main>
 
     <script>
-        // We halen de data op die Marcel heeft opgeslagen via het CMS
-        async function fetchImages() {
-            const galleryElement = document.getElementById('gallery');
+        async function loadGallery() {
+            const galleryContainer = document.getElementById('gallery');
             try {
-                // Let op: Verander 'architectuur.md' naar 'miniatuur.md' op die pagina!
+                // We halen het bestand op dat we in je screenshot zagen: content/architectuur.md
                 const response = await fetch('/content/architectuur.md');
-                if (!response.ok) throw new Error('Nog geen foto\'s geüpload.');
+                if (!response.ok) throw new Error('Geen data gevonden');
                 
                 const text = await response.text();
-                // We zoeken naar alle regels die beginnen met "image:"
-                const imageRegex = /image:\s*["']?([^"'\s\n]+)["']?/g;
-                let match;
-                let imagesFound = false;
-                let htmlContent = '';
-
-                while ((match = imageRegex.exec(text)) !== null) {
-                    const url = match[1];
-                    imagesFound = true;
-                    htmlContent += `
-                        <div class="photo-card" style="background: white; padding: 10px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                            <img src="${url}" alt="Werk van Marcel Bos" style="width: 100%; height: auto; display: block; border-radius: 2px;">
-                        </div>`;
-                }
-
-                if (imagesFound) {
-                    galleryElement.innerHTML = htmlContent;
+                
+                // Deze 'zoekmachine' (regex) zoekt specifiek naar de paden die Marcel uploadt
+                const imageRegex = /\/assets\/images\/uploads\/[^"'\s\n\]]+/g;
+                const matches = text.match(imageRegex);
+                
+                if (matches && matches.length > 0) {
+                    let htmlOutput = '';
+                    // We halen dubbele vermeldingen eruit en maken de plaatjes
+                    const uniqueImages = [...new Set(matches)];
+                    uniqueImages.forEach(url => {
+                        htmlOutput += `
+                            <div class="photo-card">
+                                <img src="${url}" alt="Architectuurfotografie Marcel Bos">
+                            </div>`;
+                    });
+                    galleryContainer.innerHTML = htmlOutput;
                 } else {
-                    galleryElement.innerHTML = '<p>Marcel heeft voor deze categorie nog geen foto\'s toegevoegd.</p>';
+                    galleryContainer.innerHTML = '<p>Er zijn nog geen foto\'s toegevoegd aan deze categorie.</p>';
                 }
-            } catch (err) {
-                console.error(err);
-                galleryElement.innerHTML = '<p>Zodra Marcel foto\'s uploadt in de admin, verschijnen ze hier.</p>';
+            } catch (error) {
+                console.error(error);
+                galleryContainer.innerHTML = '<p>Zodra Marcel de eerste foto uploadt, verschijnt deze hier.</p>';
             }
         }
-        fetchImages();
+        loadGallery();
     </script>
 </body>
 </html>
