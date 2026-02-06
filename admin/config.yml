@@ -6,21 +6,23 @@ media_folder: "assets/images/uploads"
 public_folder: "/assets/images/uploads"
 
 collections:
-  - name: "portfolio"
-    label: "Portfolio's"
+  # Nieuw: Eén collectie waar Marcel zelf pagina's kan aanmaken
+  - name: "portfolios"
+    label: "Portfolio Pagina's"
+    folder: "content/portfolios" # Hier worden de nieuwe pagina's opgeslagen
+    create: true # Dit staat toe dat Marcel nieuwe pagina's maakt
+    slug: "{{title}}" # De bestandsnaam wordt gebaseerd op de titel (bijv. 'natuur.md')
+    fields:
+      - {label: "Titel van de pagina", name: "title", widget: "string"}
+      - {label: "Foto's in de galerij", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
+
+  # Over mij kan een simpele pagina blijven
+  - name: "over-mij"
+    label: "Over mij"
     files:
-      - label: "Miniatuur"
-        name: "miniatuur"
-        file: "content/miniatuur.md"
+      - label: "Over mij pagina"
+        name: "over-mij"
+        file: "content/over-mij.md"
         fields:
-          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
-      - label: "Architectuur"
-        name: "architectuur"
-        file: "content/architectuur.md"
-        fields:
-          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
-      - label: "Lijnenspel"
-        name: "lijnenspel"
-        file: "content/lijnenspel.md"
-        fields:
-          - {label: "Foto's", name: "gallery", widget: "list", field: {label: "Foto", name: "image", widget: "image"}}
+          - {label: "Titel", name: "title", widget: "string", default: "Over Marcel Bos"}
+          - {label: "Tekst", name: "body", widget: "markdown"}
