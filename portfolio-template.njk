@@ -1,0 +1,17 @@
+---
+layout: layout.njk
+pagination:
+    data: collections.portfolios
+    size: 1
+    alias: portfolio
+permalink: "portfolio/{{ portfolio.data.title | slug }}/index.html"
+---
+<h1>{{ portfolio.data.title }}</h1>
+<div class="gallery">
+    {# Loop door de galerij van de huidige portfolio #}
+    {% for image in portfolio.data.gallery %}
+        <div class="photo-card">
+            <img src="{{ image }}" alt="Foto in {{ portfolio.data.title }}" loading="lazy">
+        </div>
+    {% endfor %}
+</div>
