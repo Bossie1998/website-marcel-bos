@@ -1,35 +1,68 @@
-<script>
-  const contentFile = '/content/architectuur.md'; 
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architectuur | Marcel Bos</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="container">
+        <nav style="display: flex; justify-content: space-between; align-items: center; padding: 20px 0;">
+            <a href="/" style="font-weight: bold; text-decoration: none; color: #1E293B;">MARCEL BOS</a>
+            <ul style="display: flex; list-style: none; gap: 20px;">
+                <li><a href="/miniatuur" style="text-decoration: none; color: #475569;">Miniatuur</a></li>
+                <li><a href="/architectuur" style="text-decoration: none; color: #1E293B; border-bottom: 2px solid #1E293B;">Architectuur</a></li>
+                <li><a href="/lijnenspel" style="text-decoration: none; color: #475569;">Lijnenspel</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  async function loadGallery() {
-    const galleryContainer = document.getElementById('gallery');
-    
-    try {
-      const response = await fetch(contentFile);
-      if (!response.ok) throw new Error('Bestand niet gevonden');
-      const text = await response.text();
+    <main class="container">
+        <h1 style="margin-top: 40px; color: #1E293B;">Architectuur</h1>
+        <hr style="border: 0; border-top: 1px solid #E2E8F0; margin-bottom: 40px;">
+        
+        <div id="gallery" class="gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            <p id="loading-text">De foto's worden opgehaald...</p>
+        </div>
+    </main>
 
-      // Verbeterde zoekmethode voor foto's in een lijst
-      const imageRegex = /image:\s*["']?([^"'\s\n]+)["']?/g;
-      let match;
-      let htmlOutput = '';
+    <script>
+        // We halen de data op die Marcel heeft opgeslagen via het CMS
+        async function fetchImages() {
+            const galleryElement = document.getElementById('gallery');
+            try {
+                // Let op: Verander 'architectuur.md' naar 'miniatuur.md' op die pagina!
+                const response = await fetch('/content/architectuur.md');
+                if (!response.ok) throw new Error('Nog geen foto\'s geüpload.');
+                
+                const text = await response.text();
+                // We zoeken naar alle regels die beginnen met "image:"
+                const imageRegex = /image:\s*["']?([^"'\s\n]+)["']?/g;
+                let match;
+                let imagesFound = false;
+                let htmlContent = '';
 
-      while ((match = imageRegex.exec(text)) !== null) {
-        const imageUrl = match[1];
-        htmlOutput += `
-          <div class="photo-card" style="margin-bottom: 20px;">
-            <a href="${imageUrl}" target="_blank">
-              <img src="${imageUrl}" style="width: 100%; border-radius: 8px;" alt="Werk van Marcel Bos">
-            </a>
-          </div>`;
-      }
+                while ((match = imageRegex.exec(text)) !== null) {
+                    const url = match[1];
+                    imagesFound = true;
+                    htmlContent += `
+                        <div class="photo-card" style="background: white; padding: 10px; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <img src="${url}" alt="Werk van Marcel Bos" style="width: 100%; height: auto; display: block; border-radius: 2px;">
+                        </div>`;
+                }
 
-      galleryContainer.innerHTML = htmlOutput || '<p>Er zijn nog geen foto\'s gevonden in dit bestand.</p>';
-      
-    } catch (error) {
-      galleryContainer.innerHTML = '<p>De website wordt bijgewerkt... Even geduld of ververs de pagina over 30 seconden.</p>';
-    }
-  }
-
-  loadGallery();
-</script>
+                if (imagesFound) {
+                    galleryElement.innerHTML = htmlContent;
+                } else {
+                    galleryElement.innerHTML = '<p>Marcel heeft voor deze categorie nog geen foto\'s toegevoegd.</p>';
+                }
+            } catch (err) {
+                console.error(err);
+                galleryElement.innerHTML = '<p>Zodra Marcel foto\'s uploadt in de admin, verschijnen ze hier.</p>';
+            }
+        }
+        fetchImages();
+    </script>
+</body>
+</html>
